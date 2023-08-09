@@ -1,1 +1,41 @@
+name: self-hosted-build
 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        description: 'test exec'
+        default: 'World'
+        required: true
+        type: string
+
+env:
+  BUILD_TYPE: Debug
+  
+jobs:
+  stage_0:
+    runs-on: [self-hosted, linux, ARM64]
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive' 
+# -------------------------------------------------
+    - name: check_action_run_0
+      run: |
+        #
+        # Self-Host
+        #
+        ./configure 0.0.1 OFF 2
+        make build
+        make deb
+# -------------------------------------------------
+    - name: job-upload-artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: selfhost-build
+        path: ${{github.workspace}}/bin/*.deb
