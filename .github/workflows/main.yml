@@ -18,7 +18,7 @@ env:
   BUILD_TYPE: Debug
   
 jobs:
-  build:
+  job-build:
 
     runs-on: ubuntu-22.04
     
@@ -27,17 +27,17 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: job-configure
+    - name: stage-configure
       run: sudo ./configure 0.0.1 OFF 2
       env:
         MY_VAR_1: "one"
         MY_VAR_2: "two"
         MY_VAR_3: "three"
 
-    - name: job-build
+    - name: stage-build
       run: make build
 
-    - name: job-upload-artifacts
+    - name: stage-upload-artifacts
       uses: actions/upload-artifact@v3
       with:
         name: Build
